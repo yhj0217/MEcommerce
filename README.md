@@ -1,36 +1,20 @@
-실행
+실행 방법
 
 ```
 npm run dev
 ```
 
-# React + TypeScript + Vite
+### 커밋컨벤션
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+| ✨ feat     | 기능 추가, 삭제, 변경                                                                   |
+| ----------- | --------------------------------------------------------------------------------------- |
+| 🐛 fix      | 버그, 오류 수정                                                                         |
+| 📝 docs     | README.md, json 파일 등 수정, 라이브러리 설치 (문서 관련, 코드 수정 없음)               |
+| 🎨 style    | CSS 등 사용자 UI 디자인 변경 (제품 코드 수정 발생, 코드 형식, 정렬 등의 변경)           |
+| ♻️ refactor | 코드 리팩토링                                                                           |
+| 🧪 test     | 테스트 코드 추가, 삭제, 변경 등 (코드 수정 없음, 테스트 코드에 관련된 모든 변경에 해당) |
+| ⚙️ config   | npm 모듈 설치 등                                                                        |
+| 🌱 chore    | 패키지 매니저 설정할 경우, etc 등 (ex. gitignore)                                       |
+| 💬 comment  | 필요한 주석 추가 및 변경                                                                |
+| 🚚 rename   | 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우                                     |
+| 🗑️ remove   | 파일을 삭제하는 작업만 수행한 경우                                                      |
