@@ -1,60 +1,86 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useContext,
+} from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "@/firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  Timestamp,
+} from "firebase/firestore";
 
-interface IAuthContext {
-  loggedIn: boolean;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  accountType: "buyer" | "seller" | null;
-  setAccountType: React.Dispatch<
-    React.SetStateAction<"buyer" | "seller" | null>
-  >;
+interface User {
+  id: number;
+  email: string;
+  isSeller: boolean;
+  nickname: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
-const AuthContext = createContext<IAuthContext | undefined>(undefined);
+interface AuthContextProps {
+  user: User | null;
+  isLogin: boolean;
+  loading: boolean;
+}
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+export const AuthContext = createContext<AuthContextProps>({
+  user: null,
+  isLogin: false,
+  loading: true,
+});
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [accountType, setAccountType] = useState<"buyer" | "seller" | null>(
-    null
-  );
+export const useAuth = () => useContext(AuthContext);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    return firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        setLoggedIn(true);
-        const doc = await firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .get();
-        const userData = doc.data();
-        if (userData && userData.isSeller) {
-          setAccountType("seller");
-        } else {
-          setAccountType("buyer");
-        }
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const uid = firebaseUser.uid;
+
+        // Firestore에서 userId가 uid인 사용자 정보를 가져옵니다.
+        const q = query(collection(db, "users"), where("userId", "==", uid));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          setUser({
+            id: data.userId,
+            email: data.email,
+            isSeller: data.isSeller,
+            nickname: data.nickname,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+          });
+        });
+        setIsLogin(true);
       } else {
-        setLoggedIn(false);
-        setAccountType(null);
+        setUser(null);
+        setIsLogin(false);
       }
+      setLoading(false); // 로딩 완료
     });
+
+    // Clean up subscription
+    return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ loggedIn, setLoggedIn, accountType, setAccountType }}
-    >
+    <AuthContext.Provider value={{ user, isLogin, loading }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
