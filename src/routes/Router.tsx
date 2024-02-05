@@ -4,11 +4,14 @@ import Splash from "@/pages/splash";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
 import MyPage from "@/pages/MyPage";
+import ProductList from "@/pages/ProductList";
+import ProductUpload from "@/pages/ProductUpload";
+import ProductManage from "@/pages/ProductManage";
 
 import { useAuth } from "@/context/AuthContext";
 
 export default function Router() {
-  const { user, loading } = useAuth();
+  const { user, loading, isSeller } = useAuth();
 
   const routing = useRoutes([
     {
@@ -30,6 +33,30 @@ export default function Router() {
     {
       path: "/mypage",
       element: loading ? null : user ? <MyPage /> : <Navigate to="/login" />,
+    },
+    {
+      path: "/mypage/product-list",
+      element: loading ? null : user && isSeller ? (
+        <ProductList />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
+    },
+    {
+      path: "/mypage/product-upload",
+      element: loading ? null : user && isSeller ? (
+        <ProductUpload />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
+    },
+    {
+      path: "/mypage/product-manage/:id",
+      element: loading ? null : user && isSeller ? (
+        <ProductManage />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
     },
   ]);
 

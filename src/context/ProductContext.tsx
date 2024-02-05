@@ -1,9 +1,9 @@
 import {
   createContext,
+  useContext,
   useState,
   useEffect,
   ReactNode,
-  useContext,
 } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "@/firebase";
@@ -12,8 +12,22 @@ import {
   query,
   where,
   getDocs,
+  addDoc,
   Timestamp,
 } from "firebase/firestore";
+
+export interface Product {
+  id: string;
+  sellerId: string;
+  productName: string;
+  productPrice: number;
+  productQuantity: number;
+  productDescription: string;
+  productCategory: string;
+  productImage: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
 
 interface User {
   id: number;
@@ -24,37 +38,45 @@ interface User {
   updatedAt: Timestamp;
 }
 
-interface AuthContextProps {
+interface ProductContextProps {
   user: User | null;
   isLogin: boolean;
-  isSeller: boolean;
   loading: boolean;
+  addProduct: (product: Product) => Promise<void>;
+  products: Product[]; // 상품 상태 추가
+  setProducts: (products: Product[]) => void; // products 상태를 변경하는 함수 추가
 }
 
-export const AuthContext = createContext<AuthContextProps>({
+export const ProductContext = createContext<ProductContextProps>({
   user: null,
   isLogin: false,
-  isSeller: false,
   loading: true,
+  addProduct: async () => {},
+  products: [],
+  setProducts: () => {}, // 초기값 설정
 });
 
-export const useAuth = () => useContext(AuthContext);
+export const useProduct = () => useContext(ProductContext);
 
-interface AuthProviderProps {
+interface ProductProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const ProductProvider = ({ children }: ProductProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<Product[]>([]); // products 상태 추가
+
+  const addProduct = async (product: Product) => {
+    await addDoc(collection(db, "products"), product);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const uid = firebaseUser.uid;
 
-        // Firestore에서 userId가 uid인 사용자 정보를 가져옵니다.
         const q = query(collection(db, "users"), where("userId", "==", uid));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
@@ -73,18 +95,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
         setIsLogin(false);
       }
-      setLoading(false); // 로딩 완료
+      setLoading(false);
     });
 
-    // Clean up subscription
     return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, isLogin, isSeller: user ? user.isSeller : false, loading }}
+    <ProductContext.Provider
+      value={{ user, isLogin, loading, addProduct, products, setProducts }}
     >
       {children}
-    </AuthContext.Provider>
+    </ProductContext.Provider>
   );
 };
