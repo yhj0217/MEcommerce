@@ -1,7 +1,24 @@
 #root {
-  margin: 40px 0 0 0;
   padding: 2rem;
   text-align: center;
+}
+
+@media (max-width: 1305px) {
+  #root {
+    margin: 40px 200px 0 200px;
+  }
+}
+
+@media (min-width: 1306px) and (max-width: 1648px) {
+  #root {
+    margin: 40px 280px 0 280px;
+  }
+}
+
+@media (min-width: 1649px) {
+  #root {
+    margin: 40px 360px 0 360px;
+  }
 }
 
 .hide-scroll::-webkit-scrollbar {

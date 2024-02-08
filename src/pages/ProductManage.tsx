@@ -68,7 +68,7 @@ const ProductManage = () => {
       return newFile;
     });
 
-    setSelectedFiles([...selectedFiles, ...files]); // 원래 있던 이미지 뒤에 추가
+    setSelectedFiles((prev) => [...prev, ...files]); // 원래 있던 이미지 뒤에 추가
   };
 
   const handleUpload = async () => {
@@ -121,14 +121,6 @@ const ProductManage = () => {
       navigate("/mypage/product-list", { replace: true });
     } catch (e) {
       console.error("Error updating document: ", e);
-    }
-
-    // 새로운 이미지가 업로드되면 기존 이미지를 삭제합니다.
-    if (urls.length > 0) {
-      originalImages.forEach(async (imageUrl) => {
-        const imageRef = ref(storage, imageUrl);
-        await deleteObject(imageRef);
-      });
     }
   };
 
