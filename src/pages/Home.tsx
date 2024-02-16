@@ -1,37 +1,21 @@
-import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import CategoryList from "@/components/Category/CategoryList";
+import NavBar from "@/components/NavBar/NavBar";
 
 const Home = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleMyPage = () => {
-    navigate("/mypage");
-  };
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleSignUp = () => {
-    navigate("/signup");
-  };
+  const categories = [
+    "카테고리1",
+    "카테고리2",
+    "카테고리3",
+    "카테고리4",
+    "카테고리5",
+  ];
 
   return (
     <div>
-      {user ? (
-        <>
-          <h1>안녕하세요, {user.nickname}님</h1>
-          <Button onClick={handleMyPage}>My Page</Button>
-        </>
-      ) : (
-        <>
-          <h1>로그인이 필요합니다.</h1>
-          <Button onClick={handleLogin}>Login</Button>
-          <Button onClick={handleSignUp}>Sign Up</Button>
-        </>
-      )}
+      <NavBar />
+      {categories.map((category) => (
+        <CategoryList key={category} category={category} />
+      ))}
     </div>
   );
 };

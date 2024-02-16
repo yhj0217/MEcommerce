@@ -10,11 +10,11 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 
-interface ProductCardProps {
+interface CategoryCardProps {
   product: Product;
 }
 
-const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
+const CategoryCard = forwardRef<HTMLDivElement, CategoryCardProps>(
   ({ product }, ref) => {
     const [api, setApi] = useState<CarouselApi>();
     const [current, setCurrent] = useState(0);
@@ -70,7 +70,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
           이미지 {current} of {count}
         </div>
         <Link
-          to={`/mypage/product-manage/${product.id}`}
+          to={`/products/${product.id}`}
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <div className="mt-2">
@@ -79,14 +79,6 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
             <div className="font-bold text-red-500 ">
               {product.productPrice}₩
             </div>
-            <div className="text-gray-500 ">
-              재고: {product.productQuantity}개
-            </div>
-            <div className="h-24 border rounded">
-              <div className="overflow-y-scroll hide-scroll max-h-24">
-                {product.productDescription}
-              </div>
-            </div>
           </div>
         </Link>
       </div>
@@ -94,4 +86,4 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
   }
 );
 
-export default ProductCard;
+export default CategoryCard;
