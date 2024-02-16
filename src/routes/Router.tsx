@@ -7,6 +7,8 @@ import MyPage from "@/pages/MyPage";
 import ProductList from "@/pages/ProductList";
 import ProductUpload from "@/pages/ProductUpload";
 import ProductManage from "@/pages/ProductManage";
+import Categories from "@/pages/Categories";
+import ProductInfo from "@/pages/ProductInfo";
 
 import { useAuth } from "@/context/AuthContext";
 
@@ -57,6 +59,14 @@ export default function Router() {
       ) : (
         <Navigate to="/mypage" />
       ),
+    },
+    {
+      path: "/categories/:category",
+      element: <Categories />,
+    },
+    {
+      path: "/products/:id",
+      element: <ProductInfo />,
     },
   ]);
 

@@ -1,15 +1,14 @@
 #root {
-  padding: 2rem;
   text-align: center;
 }
 
-@media (max-width: 1305px) {
+@media (max-width: 1536px) {
   #root {
-    margin: 40px 200px 0 200px;
+    margin: 40px 248px 0 248px;
   }
 }
 
-@media (min-width: 1306px) and (max-width: 1648px) {
+@media (min-width: 1537px) and (max-width: 1648px) {
   #root {
     margin: 40px 280px 0 280px;
   }
@@ -17,7 +16,7 @@
 
 @media (min-width: 1649px) {
   #root {
-    margin: 40px 360px 0 360px;
+    margin: 40px 430px 0 430px;
   }
 }
 

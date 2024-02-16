@@ -11,13 +11,9 @@ import {
 import { db } from "@/firebase";
 import ProductCard from "@/components/Product/ProductCard";
 import { useAuth } from "@/context/AuthContext";
-import { Product } from "@/context/ProductContext";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
-
-interface ProductId extends Product {
-  id: string;
-}
+import { Product } from "@/interface/Product";
 
 const ProductList = () => {
   const [isLoading, setLoading] = useState(false);
@@ -32,7 +28,7 @@ const ProductList = () => {
       productCollection,
       where("sellerId", "==", user.id),
       orderBy("createdAt", "desc"),
-      limit(2)
+      limit(4)
     );
 
     if (pageParam) {
@@ -41,7 +37,7 @@ const ProductList = () => {
         where("sellerId", "==", user.id),
         orderBy("createdAt", "desc"),
         startAfter(pageParam),
-        limit(2)
+        limit(4)
       );
     }
 
@@ -57,7 +53,7 @@ const ProductList = () => {
       productImage: doc.data().productImage,
       createdAt: doc.data().createdAt,
       updatedAt: doc.data().updatedAt,
-    })) as ProductId[];
+    })) as Product[];
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -85,17 +81,18 @@ const ProductList = () => {
   return (
     <div className="flex flex-wrap justify-center">
       {data?.pages?.flatMap((page = [], index) =>
-        page.map((product: ProductId, productIndex) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            ref={
-              index === data.pages.length - 1 &&
-              productIndex === page.length - 1
-                ? ref
-                : null
-            }
-          />
+        page.map((product: Product, productIndex) => (
+          <div key={product.id}>
+            <ProductCard
+              product={product}
+              ref={
+                index === data.pages.length - 1 &&
+                productIndex === page.length - 1
+                  ? ref
+                  : null
+              }
+            />
+          </div>
         ))
       )}
       {isLoading && (
