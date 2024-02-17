@@ -22,6 +22,7 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+// import { Cart } from "@/interface/Cart";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const cartItems: any[] = [

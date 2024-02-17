@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -9,6 +10,7 @@ import {
   getDocs,
   orderBy,
   limit,
+  Timestamp,
 } from "firebase/firestore";
 import {
   Carousel,
@@ -19,13 +21,18 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
-import { db } from "@/firebase";
 import { Product } from "@/interface/Product";
+import { Cart } from "@/interface/Cart";
+import { db } from "@/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
+import NavBar from "@/components/NavBar/NavBar";
 
 const ProductInfo = () => {
+  const { user } = useAuth();
   const { id } = useParams<{ [key: string]: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -34,9 +41,8 @@ const ProductInfo = () => {
     if (id) {
       const productDoc = await getDoc(doc(db, "products", id));
       if (productDoc.exists()) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id, ...data } = productDoc.data() as Product;
-        setProduct({ id: productDoc.id, ...data });
+        const data = productDoc.data() as Product;
+        setProduct(data);
       }
     }
   };
@@ -55,7 +61,6 @@ const ProductInfo = () => {
       ...doc.data(),
     })) as Product[];
 
-    // 클라이언트 측에서 현재 상품 제거
     const filteredProducts = products.filter((product) => product.id !== id);
     setRelatedProducts(filteredProducts);
   };
@@ -65,6 +70,37 @@ const ProductInfo = () => {
       fetchProduct();
     }
   }, [id]);
+
+  const addToCart = async () => {
+    if (product && id && user) {
+      const newCartItem: Cart = {
+        id: "",
+        userId: user.id.toString(),
+        sellerId: product.sellerId,
+        productId: id,
+        productQuantity: quantity,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      };
+
+      const cartRef = await addDoc(collection(db, "carts"), newCartItem);
+      newCartItem.id = cartRef.id;
+      console.log("Cart item added with ID: ", newCartItem.id);
+      setQuantity(1);
+    }
+  };
+
+  const handleIncreaseQuantity = () => {
+    if (product && quantity < product.productQuantity) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
 
   useEffect(() => {
     if (product?.productCategory) {
@@ -86,6 +122,7 @@ const ProductInfo = () => {
 
   return (
     <div>
+      <NavBar />
       {product && (
         <div>
           <h1 className="pb-5 text-5xl font-medium">{product.productName}</h1>
@@ -111,7 +148,17 @@ const ProductInfo = () => {
           </div>
           <p>상품 가격: {product.productPrice}₩</p>
           <p>남은 수량: {product.productQuantity}</p>
-          <Button>장바구니에 추가</Button>
+          <button onClick={handleDecreaseQuantity} disabled={quantity === 1}>
+            -
+          </button>
+          <span>{quantity}</span>
+          <button
+            onClick={handleIncreaseQuantity}
+            disabled={quantity === product.productQuantity}
+          >
+            +
+          </button>
+          <Button onClick={addToCart}>장바구니에 추가</Button>
           <h2 className="mt-10 mb-1 border">
             다른 {product.productCategory} 상품들
           </h2>
