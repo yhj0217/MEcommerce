@@ -5,6 +5,8 @@ export interface Cart {
   userId: string;
   sellerId: string;
   productId: string;
+  productName: string;
+  productPrice: number;
   productQuantity: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;

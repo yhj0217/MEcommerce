@@ -23,7 +23,6 @@ import {
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/interface/Product";
-import { Cart } from "@/interface/Cart";
 import { db } from "@/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
@@ -89,23 +88,23 @@ const ProductInfo = () => {
 
   useEffect(() => {
     fetchCartItemIds();
-  }, [user]);
+  }, []);
 
   const addToCart = async () => {
+    fetchCartItemIds();
     if (product && id && user) {
-      const newCartItem: Cart = {
-        id: "",
+      const newCartItem = {
         userId: user.id.toString(),
         sellerId: product.sellerId,
         productId: id,
+        productName: product.productName,
+        productPrice: product.productPrice,
         productQuantity: quantity,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       };
 
-      const cartRef = await addDoc(collection(db, "carts"), newCartItem);
-      newCartItem.id = cartRef.id;
-      console.log("Cart item added with ID: ", newCartItem.id);
+      await addDoc(collection(db, "carts"), newCartItem);
       setQuantity(1);
     }
   };
@@ -168,16 +167,21 @@ const ProductInfo = () => {
           </div>
           <p>상품 가격: {product.productPrice}₩</p>
           <p>남은 수량: {product.productQuantity}</p>
-          <button onClick={handleDecreaseQuantity} disabled={quantity === 1}>
+          <Button
+            className="h-6 p-2"
+            onClick={handleDecreaseQuantity}
+            disabled={quantity === 1}
+          >
             -
-          </button>
+          </Button>
           <span>{quantity}</span>
-          <button
+          <Button
+            className="h-6 p-2"
             onClick={handleIncreaseQuantity}
             disabled={quantity === product.productQuantity}
           >
             +
-          </button>
+          </Button>
           {id && cartItemIds.includes(id) ? (
             <Sheet>
               <SheetTrigger asChild>
@@ -186,7 +190,12 @@ const ProductInfo = () => {
               <CartContents />
             </Sheet>
           ) : (
-            <Button onClick={addToCart}>장바구니에 추가</Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button onClick={addToCart}>장바구니에 추가</Button>
+              </SheetTrigger>
+              <CartContents />
+            </Sheet>
           )}
           <h2 className="mt-10 mb-1 border">
             다른 {product.productCategory} 상품들

@@ -21,6 +21,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import NavBar from "@/components/NavBar/NavBar";
 
 const Categories = () => {
   const { category } = useParams<{ [key: string]: string }>();
@@ -96,43 +97,46 @@ const Categories = () => {
   }, [orderFilter, refetch, queryClient]);
 
   return (
-    <div className="flex flex-col items-end">
-      <div className="mb-4">
-        <Select
-          value={orderFilter}
-          onValueChange={(value) => setOrderFilter(value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="선택" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="createdAt/desc">최신순</SelectItem>
-            <SelectItem value="productPrice/desc">높은 가격순</SelectItem>
-            <SelectItem value="productPrice/asc">낮은 가격순</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-wrap justify-center">
-        {data?.pages?.flatMap((page = [], index) =>
-          page.map((product: Product, productIndex) => (
-            <div key={product.id}>
-              <CategoryCard
-                product={product}
-                ref={
-                  index === data.pages.length - 1 &&
-                  productIndex === page.length - 1
-                    ? ref
-                    : null
-                }
-              />
-            </div>
-          ))
-        )}
-        {isLoading && (
-          <p className="w-full font-bold text-center text-gray-600">
-            상품을 불러오는 중입니다...
-          </p>
-        )}
+    <div>
+      <NavBar />
+      <div className="flex flex-col items-end">
+        <div className="mb-4">
+          <Select
+            value={orderFilter}
+            onValueChange={(value) => setOrderFilter(value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="선택" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="createdAt/desc">최신순</SelectItem>
+              <SelectItem value="productPrice/desc">높은 가격순</SelectItem>
+              <SelectItem value="productPrice/asc">낮은 가격순</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-wrap justify-center">
+          {data?.pages?.flatMap((page = [], index) =>
+            page.map((product: Product, productIndex) => (
+              <div key={product.id}>
+                <CategoryCard
+                  product={product}
+                  ref={
+                    index === data.pages.length - 1 &&
+                    productIndex === page.length - 1
+                      ? ref
+                      : null
+                  }
+                />
+              </div>
+            ))
+          )}
+          {isLoading && (
+            <p className="w-full font-bold text-center text-gray-600">
+              상품을 불러오는 중입니다...
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
