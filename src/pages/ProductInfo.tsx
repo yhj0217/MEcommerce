@@ -91,7 +91,6 @@ const ProductInfo = () => {
   }, []);
 
   const addToCart = async () => {
-    fetchCartItemIds();
     if (product && id && user) {
       const newCartItem = {
         userId: user.id.toString(),
@@ -106,6 +105,7 @@ const ProductInfo = () => {
 
       await addDoc(collection(db, "carts"), newCartItem);
       setQuantity(1);
+      await fetchCartItemIds();
     }
   };
 

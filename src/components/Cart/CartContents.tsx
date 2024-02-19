@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -31,6 +32,17 @@ import { db } from "@/firebase";
 import { Cart } from "@/interface/Cart";
 import { useState, useEffect } from "react";
 import { Product } from "@/interface/Product";
+import { Alert, AlertTitle } from "../ui/alert";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogHeader,
+  AlertDialogFooter,
+} from "../ui/alert-dialog";
 
 const CartContents = () => {
   const { user } = useAuth();
@@ -46,6 +58,9 @@ const CartContents = () => {
   const [isQuantityChanged, setIsQuantityChanged] = useState<boolean[]>(
     new Array(cartItems?.length).fill(false)
   );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [removedItemIdx, setRemovedItemIdx] = useState<number | null>(null);
+  const [alert, setAlert] = useState<null | string>(null);
 
   const fetchCartItems = async () => {
     const cartCollection = collection(db, "carts");
@@ -153,8 +168,53 @@ const CartContents = () => {
     }
   }, [cartItems]);
 
+  const openDialog = (idx: number) => {
+    setIsDialogOpen(true);
+    setRemovedItemIdx(idx);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setRemovedItemIdx(null);
+  };
+
+  const handleRemoveItem = async () => {
+    if (cartItems && removedItemIdx !== null) {
+      try {
+        const item = cartItems[removedItemIdx];
+        const collectionRef = collection(db, "carts");
+        const docRef = doc(collectionRef, item.id);
+        await deleteDoc(docRef);
+        closeDialog();
+        const newCartItems = [...cartItems];
+        newCartItems.splice(removedItemIdx, 1);
+        setCartItems(newCartItems);
+        setAlert("장바구니에서 삭제되었습니다.");
+      } catch (e) {
+        console.error("Error removing document: ", e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => {
+        setAlert(null);
+      }, 2000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [alert]);
+
   return (
     <SheetContent>
+      {alert && (
+        <Alert className="absolute bottom-0 right-0 text-white bg-black">
+          <AlertTitle>{alert}</AlertTitle>
+        </Alert>
+      )}
       <SheetHeader>
         <SheetTitle>장바구니</SheetTitle>
       </SheetHeader>
@@ -175,7 +235,7 @@ const CartContents = () => {
                 {cartProducts && cartProducts[idx].productName}
               </TableCell>
               <TableCell>
-                {cartProducts && cartProducts[idx].productPrice}
+                {cartProducts && cartProducts[idx].productPrice}₩
               </TableCell>
               <TableCell>
                 <Button
@@ -204,10 +264,31 @@ const CartContents = () => {
                 >
                   변경
                 </Button>
+                <AlertDialog open={isDialogOpen}>
+                  <AlertDialogTrigger asChild>
+                    <Button onClick={() => openDialog(idx)}>삭제</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        상품을 삭제하시겠습니까?
+                      </AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel onClick={closeDialog}>
+                        취소
+                      </AlertDialogCancel>
+                      <AlertDialogAction onClick={handleRemoveItem}>
+                        삭제하기
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
               <TableCell className="text-right">
                 {cartProducts &&
                   cartProducts[idx].productPrice * item.productQuantity}
+                ₩
               </TableCell>
             </TableRow>
           ))}
@@ -220,6 +301,7 @@ const CartContents = () => {
                 (acc, cur) => acc + cur.productPrice * cur.productQuantity,
                 0
               )}
+              ₩
             </TableCell>
           </TableRow>
         </TableFooter>
