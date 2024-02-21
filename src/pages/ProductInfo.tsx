@@ -28,6 +28,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
 import NavBar from "@/components/NavBar/NavBar";
 import CartContents from "@/components/Cart/CartContents";
+import { useCart } from "@/context/CartContext";
 
 const ProductInfo = () => {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ const ProductInfo = () => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [cartItemIds, setCartItemIds] = useState<string[]>([]);
+  const { setCartItems } = useCart();
 
   const fetchProduct = async () => {
     if (id) {
@@ -83,12 +85,19 @@ const ProductInfo = () => {
       const cartSnapshot = await getDocs(cartQuery);
       const cartItemIds = cartSnapshot.docs.map((doc) => doc.data().productId);
       setCartItemIds(cartItemIds);
+      return cartItemIds;
     }
   };
 
   useEffect(() => {
     fetchCartItemIds();
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    fetchCartItemIds();
+  }, [cartItemIds]);
+
+  const isItemInCart = id ? cartItemIds.includes(id) : false;
 
   const addToCart = async () => {
     if (product && id && user) {
@@ -103,9 +112,15 @@ const ProductInfo = () => {
         updatedAt: Timestamp.now(),
       };
 
-      await addDoc(collection(db, "carts"), newCartItem);
+      const docRef = await addDoc(collection(db, "carts"), newCartItem);
+
       setQuantity(1);
-      await fetchCartItemIds();
+      setCartItemIds((prevCartItemIds) => [...prevCartItemIds, docRef.id]);
+
+      setCartItems((prevCartItems) => [
+        { ...newCartItem, id: docRef.id },
+        ...prevCartItems,
+      ]);
     }
   };
 
@@ -182,21 +197,14 @@ const ProductInfo = () => {
           >
             +
           </Button>
-          {id && cartItemIds.includes(id) ? (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button>장바구니 보기</Button>
-              </SheetTrigger>
-              <CartContents />
-            </Sheet>
-          ) : (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button onClick={addToCart}>장바구니에 추가</Button>
-              </SheetTrigger>
-              <CartContents />
-            </Sheet>
-          )}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button onClick={isItemInCart ? undefined : addToCart}>
+                {isItemInCart ? "장바구니 보기" : "장바구니에 추가"}
+              </Button>
+            </SheetTrigger>
+            <CartContents />
+          </Sheet>
           <h2 className="mt-10 mb-1 border">
             다른 {product.productCategory} 상품들
           </h2>

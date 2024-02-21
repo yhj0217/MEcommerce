@@ -1,4 +1,3 @@
-import { useAuth } from "@/context/AuthContext";
 import { Button } from "../ui/button";
 import {
   SheetContent,
@@ -22,15 +21,11 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  getDocs,
-  orderBy,
-  query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { Cart } from "@/interface/Cart";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Product } from "@/interface/Product";
 import { Alert, AlertTitle } from "../ui/alert";
 import {
@@ -43,49 +38,30 @@ import {
   AlertDialogHeader,
   AlertDialogFooter,
 } from "../ui/alert-dialog";
+import { CartContext } from "@/context/CartContext";
 
 const CartContents = () => {
-  const { user } = useAuth();
+  const { cartItems, setCartItems } = useContext(CartContext);
 
-  const [cartItems, setCartItems] = useState<Cart[]>();
-  const [quantity, setQuantity] = useState<number[]>(
-    new Array(cartItems?.length).fill(0)
-  );
-  const [originalQuantity, setOriginalQuantity] = useState<number[]>(
-    new Array(cartItems?.length).fill(0)
-  );
+  const [quantity, setQuantity] = useState<number[]>([]);
+  const [originalQuantity, setOriginalQuantity] = useState<number[]>([]);
   const [cartProducts, setCartProducts] = useState<Product[]>();
-  const [isQuantityChanged, setIsQuantityChanged] = useState<boolean[]>(
-    new Array(cartItems?.length).fill(false)
-  );
+  const [isQuantityChanged, setIsQuantityChanged] = useState<boolean[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [removedItemIdx, setRemovedItemIdx] = useState<number | null>(null);
   const [alert, setAlert] = useState<null | string>(null);
 
-  const fetchCartItems = async () => {
-    const cartCollection = collection(db, "carts");
-    const cartQuery = query(
-      cartCollection,
-      where("userId", "==", user?.id),
-      orderBy("createdAt", "desc")
-    );
-    const cartSnapshot = await getDocs(cartQuery);
-    const carts = cartSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Cart[];
-    setOriginalQuantity(carts.map((cart) => cart.productQuantity));
-    setCartItems(carts);
-    await fetchProductInCart(carts);
-  };
-
   useEffect(() => {
-    fetchCartItems();
-  }, []);
+    if (cartItems?.length) {
+      setQuantity(new Array(cartItems.length).fill(0));
+      setOriginalQuantity(cartItems.map((cart) => cart.productQuantity));
+      setIsQuantityChanged(new Array(cartItems.length).fill(false));
+    }
+  }, [cartItems]);
 
   useEffect(() => {
     const temp: number[] = [];
-    cartItems?.forEach((val) => {
+    cartItems?.forEach((val: Cart) => {
       temp.push(val.productQuantity);
     });
     setQuantity(temp);
@@ -130,7 +106,17 @@ const CartContents = () => {
           newIsQuantityChanged[idx] = false;
           return newIsQuantityChanged;
         });
-        await fetchCartItems();
+
+        // 장바구니 아이템의 수량을 업데이트합니다.
+        setCartItems((prev) => {
+          const newCartItems = [...prev];
+          newCartItems[idx] = {
+            ...newCartItems[idx],
+            productQuantity: quantity[idx],
+          };
+          return newCartItems;
+        });
+
         setOriginalQuantity((prev) => {
           const newOriginalQuantity: number[] = [...prev];
           newOriginalQuantity[idx] = quantity[idx];
@@ -229,14 +215,10 @@ const CartContents = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cartItems?.map((item, idx) => (
+          {cartItems?.map((item: Cart, idx: number) => (
             <TableRow key={item.id}>
-              <TableCell>
-                {cartProducts && cartProducts[idx].productName}
-              </TableCell>
-              <TableCell>
-                {cartProducts && cartProducts[idx].productPrice}₩
-              </TableCell>
+              <TableCell>{cartProducts?.[idx]?.productName}</TableCell>
+              <TableCell>{cartProducts?.[idx]?.productPrice}₩</TableCell>
               <TableCell>
                 <Button
                   className="h-6 p-2"
@@ -250,7 +232,7 @@ const CartContents = () => {
                   className="h-6 p-2"
                   onClick={() => handleIncreaseQuantity(idx)}
                   disabled={
-                    cartProducts &&
+                    cartProducts?.[idx] &&
                     quantity[idx] == cartProducts[idx].productQuantity
                   }
                 >
@@ -287,7 +269,7 @@ const CartContents = () => {
               </TableCell>
               <TableCell className="text-right">
                 {cartProducts &&
-                  cartProducts[idx].productPrice * item.productQuantity}
+                  cartProducts[idx]?.productPrice * item.productQuantity}
                 ₩
               </TableCell>
             </TableRow>
@@ -298,10 +280,11 @@ const CartContents = () => {
             <TableCell colSpan={4}>총합</TableCell>
             <TableCell className="text-right">
               {cartItems?.reduce(
-                (acc, cur) => acc + cur.productPrice * cur.productQuantity,
+                (acc: number, cur: Cart) =>
+                  acc + cur.productPrice * cur.productQuantity,
                 0
               )}
-              ₩
+              ₩ ₩
             </TableCell>
           </TableRow>
         </TableFooter>
