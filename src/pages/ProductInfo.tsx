@@ -84,7 +84,7 @@ const ProductInfo = () => {
   useEffect(() => {
     if (id) {
       fetchProduct();
-      // 상품 바뀔 때마다 첫번째 사진이니까 1을 세팅해줌 ..
+      // 상품 바뀔 때마다 첫번째 사진이니까 1을 세팅해준다.
       setCurrentImageIndex(1);
       if (carouselApi) {
         // carousel api 초기화
@@ -112,7 +112,7 @@ const ProductInfo = () => {
   //   fetchCartItemIds();
   // }, [user]);
 
-  // fetchCartItemIds에서 아이디 리스트를 세팅해놓고 (setCartItemIds) cartItemIds가 변하면 다시 함수를 실행하는 게 무한로딩을 하게 한다.
+  // fetchCartItemIds에서 아이디 리스트를 세팅해놓고 (setCartItemIds) cartItemIds가 변하면 다시 함수를 실행하는 게 무한로딩을 하게 만든다.
   // useEffect(() => {
   //   fetchCartItemIds();
   // }, [cartItemIds]);
