@@ -71,7 +71,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         <CarouselContent>
           {selectedFiles.map((file, index) => (
             <CarouselItem key={index}>
-              <Card className="w-52 h-52">
+              <Card className="w-full">
                 <CardContent className="relative flex items-center justify-center p-6 aspect-square">
                   <img
                     src={URL.createObjectURL(file)}
@@ -89,7 +89,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
           ))}
           {imageUrls.map((url, index) => (
             <CarouselItem key={index}>
-              <Card className="w-52 h-52">
+              <Card className="w-full">
                 <CardContent className="relative flex items-center justify-center p-6 aspect-square">
                   <img src={url} alt={`Selected ${index + 1}`} />
                   <button
