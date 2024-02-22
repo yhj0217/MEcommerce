@@ -26,6 +26,7 @@ import {
 import { db } from "@/firebase";
 import { Cart } from "@/interface/Cart";
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Product } from "@/interface/Product";
 import { Alert, AlertTitle } from "../ui/alert";
 import {
@@ -39,8 +40,10 @@ import {
   AlertDialogFooter,
 } from "../ui/alert-dialog";
 import { CartContext } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const CartContents = () => {
+  const { user } = useAuth();
   const { cartItems, setCartItems } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState<number[]>([]);
@@ -50,6 +53,7 @@ const CartContents = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [removedItemIdx, setRemovedItemIdx] = useState<number | null>(null);
   const [alert, setAlert] = useState<null | string>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (cartItems?.length) {
@@ -142,7 +146,7 @@ const CartContents = () => {
 
       const products = await Promise.all(productFetchPromises);
       const validProducts = products.filter(Boolean) as Product[];
-      setCartProducts(validProducts);
+      setCartProducts(validProducts); //
     } catch (err) {
       console.error("Error fetching products in cart: ", err);
     }
@@ -194,6 +198,10 @@ const CartContents = () => {
     }
   }, [alert]);
 
+  const handleOrder = () => {
+    navigate(`/order/${user?.id}`);
+  };
+
   return (
     <SheetContent>
       {alert && (
@@ -217,7 +225,16 @@ const CartContents = () => {
         <TableBody>
           {cartItems?.map((item: Cart, idx: number) => (
             <TableRow key={item.id}>
-              <TableCell>{cartProducts?.[idx]?.productName}</TableCell>
+              <TableCell className="flex">
+                <img
+                  src={cartProducts?.[idx].productImage[0]}
+                  alt="상품 첫 이미지"
+                  className="object-cover w-10 h-10 mr-2"
+                />
+                <div className="grid place-items-center">
+                  {cartProducts?.[idx]?.productName}
+                </div>
+              </TableCell>
               <TableCell>{cartProducts?.[idx]?.productPrice}₩</TableCell>
               <TableCell>
                 <Button
@@ -284,14 +301,16 @@ const CartContents = () => {
                   acc + cur.productPrice * cur.productQuantity,
                 0
               )}
-              ₩ ₩
+              ₩
             </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
       <SheetFooter>
         <SheetClose asChild>
-          <Button type="submit">결제하기</Button>
+          <Button type="submit" onClick={handleOrder}>
+            구매하기
+          </Button>
         </SheetClose>
       </SheetFooter>
     </SheetContent>
