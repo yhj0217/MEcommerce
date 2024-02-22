@@ -38,8 +38,20 @@ const ProductInfo = () => {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [cartItemIds, setCartItemIds] = useState<string[]>([]);
-  const { setCartItems } = useCart();
+  // const [cartItemIds, setCartItemIds] = useState<string[]>([]);
+  const { cartItems, setCartItems } = useCart();
+
+  // isItemInCart를 상태로 새로 만들었다!
+  const [isItemInCart, setIsItemInCart] = useState(false);
+
+  // 데이터 변경시 '컨텍스트의 카트 데이터'에서 아이디를 대조한다! 그리고 상태값을 변경시켜준다!
+  useEffect(() => {
+    if (id) {
+      const idList = cartItems.map((item) => item.productId);
+      if (idList.includes(id)) setIsItemInCart(true);
+      else setIsItemInCart(false);
+    }
+  }, [id, cartItems]);
 
   const fetchProduct = async () => {
     if (id) {
@@ -72,32 +84,40 @@ const ProductInfo = () => {
   useEffect(() => {
     if (id) {
       fetchProduct();
+      // 상품 바뀔 때마다 첫번째 사진이니까 1을 세팅해줌 ..
+      setCurrentImageIndex(1);
+      if (carouselApi) {
+        // carousel api 초기화
+        carouselApi.scrollTo(0);
+      }
     }
   }, [id]);
 
-  const fetchCartItemIds = async () => {
-    if (user) {
-      const cartCollection = collection(db, "carts");
-      const cartQuery = query(
-        cartCollection,
-        where("userId", "==", user.id.toString())
-      );
-      const cartSnapshot = await getDocs(cartQuery);
-      const cartItemIds = cartSnapshot.docs.map((doc) => doc.data().productId);
-      setCartItemIds(cartItemIds);
-      return cartItemIds;
-    }
-  };
+  // 이딴 건 필요가 없다.
+  // const fetchCartItemIds = async () => {
+  //   if (user) {
+  //     const cartCollection = collection(db, "carts");
+  //     const cartQuery = query(
+  //       cartCollection,
+  //       where("userId", "==", user.id.toString())
+  //     );
+  //     const cartSnapshot = await getDocs(cartQuery);
+  //     const cartItemIds = cartSnapshot.docs.map((doc) => doc.data().productId);
+  //     setCartItemIds(cartItemIds);
+  //     return cartItemIds;
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchCartItemIds();
-  }, [user]);
+  // useEffect(() => {
+  //   fetchCartItemIds();
+  // }, [user]);
 
-  useEffect(() => {
-    fetchCartItemIds();
-  }, [cartItemIds]);
+  // fetchCartItemIds에서 아이디 리스트를 세팅해놓고 (setCartItemIds) cartItemIds가 변하면 다시 함수를 실행하는 게 무한로딩을 하게 한다.
+  // useEffect(() => {
+  //   fetchCartItemIds();
+  // }, [cartItemIds]);
 
-  const isItemInCart = id ? cartItemIds.includes(id) : false;
+  // const isItemInCart = id ? cartItemIds.includes(id) : false;
 
   const addToCart = async () => {
     if (product && id && user) {
@@ -115,7 +135,7 @@ const ProductInfo = () => {
       const docRef = await addDoc(collection(db, "carts"), newCartItem);
 
       setQuantity(1);
-      setCartItemIds((prevCartItemIds) => [...prevCartItemIds, docRef.id]);
+      // setCartItemIds((prevCartItemIds) => [...prevCartItemIds, docRef.id]);
 
       setCartItems((prevCartItems) => [
         { ...newCartItem, id: docRef.id },
@@ -162,9 +182,12 @@ const ProductInfo = () => {
           <h1 className="pb-5 text-5xl font-medium">{product.productName}</h1>
           <div className="flex justify-center">
             <Carousel setApi={setCarouselApi} className="w-96 h-96">
-              <CarouselContent className="w-96 h-96">
+              <CarouselContent>
                 {product.productImage.map((img, index) => (
-                  <CarouselItem key={index} className="w-96 h-96">
+                  <CarouselItem
+                    key={index}
+                    className="flex items-center justify-center w-96 h-96"
+                  >
                     <img
                       src={img}
                       alt={product.productName}
@@ -182,29 +205,33 @@ const ProductInfo = () => {
           </div>
           <p>상품 가격: {product.productPrice}₩</p>
           <p>남은 수량: {product.productQuantity}</p>
-          <Button
-            className="h-6 p-2"
-            onClick={handleDecreaseQuantity}
-            disabled={quantity === 1}
-          >
-            -
-          </Button>
-          <span>{quantity}</span>
-          <Button
-            className="h-6 p-2"
-            onClick={handleIncreaseQuantity}
-            disabled={quantity === product.productQuantity}
-          >
-            +
-          </Button>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button onClick={isItemInCart ? undefined : addToCart}>
-                {isItemInCart ? "장바구니 보기" : "장바구니에 추가"}
+          {!user?.isSeller && (
+            <>
+              <Button
+                className="h-6 p-2"
+                onClick={handleDecreaseQuantity}
+                disabled={quantity === 1}
+              >
+                -
               </Button>
-            </SheetTrigger>
-            <CartContents />
-          </Sheet>
+              <span>{quantity}</span>
+              <Button
+                className="h-6 p-2"
+                onClick={handleIncreaseQuantity}
+                disabled={quantity === product.productQuantity}
+              >
+                +
+              </Button>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button onClick={isItemInCart ? undefined : addToCart}>
+                    {isItemInCart ? "장바구니 보기" : "장바구니에 추가"}
+                  </Button>
+                </SheetTrigger>
+                <CartContents />
+              </Sheet>
+            </>
+          )}
           <h2 className="mt-10 mb-1 border">
             다른 {product.productCategory} 상품들
           </h2>
