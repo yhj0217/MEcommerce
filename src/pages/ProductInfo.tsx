@@ -126,6 +126,7 @@ const ProductInfo = () => {
         sellerId: product.sellerId,
         productId: id,
         productName: product.productName,
+        productImage: product.productImage,
         productPrice: product.productPrice,
         productQuantity: quantity,
         createdAt: Timestamp.now(),

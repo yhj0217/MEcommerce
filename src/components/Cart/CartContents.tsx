@@ -227,7 +227,7 @@ const CartContents = () => {
             <TableRow key={item.id}>
               <TableCell className="flex">
                 <img
-                  src={cartProducts?.[idx].productImage[0]}
+                  src={cartProducts?.[idx]?.productImage[0]}
                   alt="상품 첫 이미지"
                   className="object-cover w-10 h-10 mr-2"
                 />
