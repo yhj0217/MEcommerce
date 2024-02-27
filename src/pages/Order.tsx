@@ -9,17 +9,7 @@ import { OrderStatus } from "@/interface/Order";
 import { Timestamp, addDoc, collection } from "@firebase/firestore";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-// type CartProduct = {
-//   cartId: string;
-//   productId: string;
-//   sellerId: string;
-//   productName: string;
-//   productImage: string[];
-//   productPrice: number;
-//   productQuantity: number;
-// };
+import { useParams, useNavigate } from "react-router-dom";
 
 const Order = () => {
   const { uid } = useParams<{ uid: string }>();
@@ -31,6 +21,8 @@ const Order = () => {
     address: "",
     postalCode: "",
   });
+  const navigate = useNavigate();
+  const oid = `oid_${new Date().getTime()}`;
 
   // 구매 여부 상태 설정
   const [purchaseStatus, setPurchaseStatus] = useState(
@@ -109,10 +101,11 @@ const Order = () => {
             await Promise.all(
               checkedItems.map((item) => {
                 const newOrder = {
+                  orderBundle: oid,
                   sellerId: item.sellerId,
                   buyerId: uid,
-                  productId: item.productId,
-                  productImage: item.productImage,
+                  productName: item.productName,
+                  productImage: item.productImage[0],
                   productQuantity: item.productQuantity,
                   productPrice: item.productPrice,
                   Status: OrderStatus.OrderConfirm,
@@ -130,6 +123,9 @@ const Order = () => {
                 deleteDoc(docRef);
               })
             );
+
+            // 주문 상세페이지로 이동
+            navigate(`/orderdetail/${uid}/${oid}`);
           } else {
             console.log(error_msg);
             alert("결제 실패");

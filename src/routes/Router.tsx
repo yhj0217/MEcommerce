@@ -10,6 +10,7 @@ import ProductManage from "@/pages/ProductManage";
 import Categories from "@/pages/Categories";
 import ProductInfo from "@/pages/ProductInfo";
 import Order from "@/pages/Order";
+import OrderDetail from "@/pages/OrderDetail";
 
 import { useAuth } from "@/context/AuthContext";
 
@@ -75,6 +76,14 @@ export default function Router() {
       path: "/order/:uid",
       element: loading ? null : user && !isSeller ? (
         <Order />
+      ) : (
+        <Navigate to="/" />
+      ),
+    },
+    {
+      path: "/orderdetail/:uid/:oid",
+      element: loading ? null : user && !isSeller ? (
+        <OrderDetail />
       ) : (
         <Navigate to="/" />
       ),
