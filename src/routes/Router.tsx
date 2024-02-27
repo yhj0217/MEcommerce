@@ -13,6 +13,7 @@ import Order from "@/pages/Order";
 import OrderDetail from "@/pages/OrderDetail";
 
 import { useAuth } from "@/context/AuthContext";
+import OrderHistory from "@/pages/OrderHistory";
 
 export default function Router() {
   const { user, loading, isSeller } = useAuth();
@@ -72,6 +73,14 @@ export default function Router() {
       ),
     },
     // 구매자 전용
+    {
+      path: "/mypage/orderhistory",
+      element: loading ? null : user && !isSeller ? (
+        <OrderHistory />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
+    },
     {
       path: "/order/:uid",
       element: loading ? null : user && !isSeller ? (

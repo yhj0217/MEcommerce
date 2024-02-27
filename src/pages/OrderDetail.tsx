@@ -42,7 +42,7 @@ const OrderDetail = () => {
     navigate("/");
   };
   const goToOrderHistory = () => {
-    navigate("/orderhistory");
+    navigate("/mypage/orderhistory");
   };
 
   return (

@@ -3,7 +3,7 @@ import {
   RequestPayParams,
   RequestPayResponse,
 } from "@/components/types/Iamport";
-import { CartContext } from "@/context/CartContext";
+import { CartContext, useCart } from "@/context/CartContext";
 import { db } from "@/firebase";
 import { OrderStatus } from "@/interface/Order";
 import { Timestamp, addDoc, collection } from "@firebase/firestore";
@@ -13,6 +13,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const Order = () => {
   const { uid } = useParams<{ uid: string }>();
+  const { fetchCartItems } = useCart();
   const { cartItems } = useContext(CartContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
@@ -64,6 +65,11 @@ const Order = () => {
         (_, index) => purchaseStatus[index]
       );
 
+      if (checkedItems.length === 0) {
+        alert("구매할 상품을 선택해주세요.");
+        return;
+      }
+
       // 체크한 상품의 재고를 감소시킵니다.
       await Promise.all(
         checkedItems.map((item) =>
@@ -105,6 +111,7 @@ const Order = () => {
                   sellerId: item.sellerId,
                   buyerId: uid,
                   productName: item.productName,
+                  productId: item.productId,
                   productImage: item.productImage[0],
                   productQuantity: item.productQuantity,
                   productPrice: item.productPrice,
@@ -123,6 +130,8 @@ const Order = () => {
                 deleteDoc(docRef);
               })
             );
+
+            fetchCartItems();
 
             // 주문 상세페이지로 이동
             navigate(`/orderdetail/${uid}/${oid}`);

@@ -13,6 +13,7 @@ export interface Order {
   orderBundle: string;
   sellerId: string;
   buyerId: string;
+  productId: string;
   productName: string;
   productImage: string;
   productQuantity: number;
