@@ -9,8 +9,11 @@ import ProductUpload from "@/pages/ProductUpload";
 import ProductManage from "@/pages/ProductManage";
 import Categories from "@/pages/Categories";
 import ProductInfo from "@/pages/ProductInfo";
+import Order from "@/pages/Order";
+import OrderDetail from "@/pages/OrderDetail";
 
 import { useAuth } from "@/context/AuthContext";
+import OrderHistory from "@/pages/OrderHistory";
 
 export default function Router() {
   const { user, loading, isSeller } = useAuth();
@@ -37,6 +40,15 @@ export default function Router() {
       element: loading ? null : user ? <MyPage /> : <Navigate to="/login" />,
     },
     {
+      path: "/categories/:category",
+      element: <Categories />,
+    },
+    {
+      path: "/products/:id",
+      element: <ProductInfo />,
+    },
+    // 판매자 전용
+    {
       path: "/mypage/product-list",
       element: loading ? null : user && isSeller ? (
         <ProductList />
@@ -60,13 +72,30 @@ export default function Router() {
         <Navigate to="/mypage" />
       ),
     },
+    // 구매자 전용
     {
-      path: "/categories/:category",
-      element: <Categories />,
+      path: "/mypage/orderhistory",
+      element: loading ? null : user && !isSeller ? (
+        <OrderHistory />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
     },
     {
-      path: "/products/:id",
-      element: <ProductInfo />,
+      path: "/order/:uid",
+      element: loading ? null : user && !isSeller ? (
+        <Order />
+      ) : (
+        <Navigate to="/" />
+      ),
+    },
+    {
+      path: "/orderdetail/:uid/:oid",
+      element: loading ? null : user && !isSeller ? (
+        <OrderDetail />
+      ) : (
+        <Navigate to="/" />
+      ),
     },
   ]);
 

@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "react-query";
 import { Product } from "@/interface/Product";
+import NavBar from "@/components/NavBar/NavBar";
 
 const ProductList = () => {
   const [isLoading, setLoading] = useState(false);
@@ -79,28 +80,31 @@ const ProductList = () => {
   }, [user, inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="flex flex-wrap justify-center">
-      {data?.pages?.flatMap((page = [], index) =>
-        page.map((product: Product, productIndex) => (
-          <div key={product.id}>
-            <ProductCard
-              product={product}
-              ref={
-                index === data.pages.length - 1 &&
-                productIndex === page.length - 1
-                  ? ref
-                  : null
-              }
-            />
-          </div>
-        ))
-      )}
-      {isLoading && (
-        <p className="w-full font-bold text-center text-gray-600">
-          상품을 불러오는 중입니다...
-        </p>
-      )}
-    </div>
+    <>
+      <NavBar />
+      <div className="flex flex-wrap justify-center">
+        {data?.pages?.flatMap((page = [], index) =>
+          page.map((product: Product, productIndex) => (
+            <div key={product.id}>
+              <ProductCard
+                product={product}
+                ref={
+                  index === data.pages.length - 1 &&
+                  productIndex === page.length - 1
+                    ? ref
+                    : null
+                }
+              />
+            </div>
+          ))
+        )}
+        {isLoading && (
+          <p className="w-full font-bold text-center text-gray-600">
+            상품을 불러오는 중입니다...
+          </p>
+        )}
+      </div>
+    </>
   );
 };
 

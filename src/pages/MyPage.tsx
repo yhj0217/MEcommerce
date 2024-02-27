@@ -18,7 +18,7 @@ const BuyerButtons = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <Button onClick={() => navigate("purchase-history")}>구매 이력</Button>
+      <Button onClick={() => navigate("orderhistory")}>구매 내역</Button>
     </div>
   );
 };
