@@ -88,7 +88,6 @@ const Login = () => {
       </div>
 
       <Button onClick={loginHandler}>로그인</Button>
-      <Button>소셜 계정으로 로그인</Button>
 
       <div>
         <Label>아직 회원이 아니세요?</Label>
