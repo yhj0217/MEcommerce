@@ -84,7 +84,7 @@ const SignUp = () => {
       const collectionRef = collection(db, "users");
       await addDoc(collectionRef, newUser);
 
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       const errorCode = (error as { code?: string }).code;
       if (errorCode === "auth/email-already-in-use") {

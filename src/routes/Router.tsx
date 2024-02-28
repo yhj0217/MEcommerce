@@ -20,16 +20,16 @@ export default function Router() {
 
   const routing = useRoutes([
     {
-      path: "/home",
+      path: "/",
       element: <Home />,
     },
     {
       path: "/signup",
-      element: loading ? null : !user ? <SignUp /> : <Navigate to="/home" />,
+      element: loading ? null : !user ? <SignUp /> : <Navigate to="/" />,
     },
     {
       path: "/login",
-      element: loading ? null : !user ? <Login /> : <Navigate to="/home" />,
+      element: loading ? null : !user ? <Login /> : <Navigate to="/" />,
     },
     {
       path: "/mypage",
