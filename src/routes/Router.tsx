@@ -1,6 +1,5 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import Home from "@/pages/Home";
-import Splash from "@/pages/splash";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
 import MyPage from "@/pages/MyPage";
@@ -20,10 +19,6 @@ export default function Router() {
   const { user, loading, isSeller } = useAuth();
 
   const routing = useRoutes([
-    {
-      path: "/",
-      element: <Splash />,
-    },
     {
       path: "/home",
       element: <Home />,
