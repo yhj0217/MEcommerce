@@ -10,6 +10,7 @@ const SellerButtons = () => {
     <div>
       <Button onClick={() => navigate("product-list")}>전체 상품 조회</Button>
       <Button onClick={() => navigate("product-upload")}>상품 등록</Button>
+      <Button onClick={() => navigate("salesmanage")}>판매 관리</Button>
     </div>
   );
 };
