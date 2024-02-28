@@ -10,6 +10,7 @@ import invisible from "../assets/invisible.svg";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import NavBar from "@/components/NavBar/NavBar";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -96,9 +97,8 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h2>회원가입 페이지</h2>
-
+    <>
+      <NavBar />
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Label htmlFor="email">이메일</Label>
         <Input
@@ -126,7 +126,7 @@ const SignUp = () => {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+          className="absolute flex right-1 top-7"
         >
           {showPassword ? (
             <img src={visible} className="w-6 h-6" alt="visible" />
@@ -149,7 +149,7 @@ const SignUp = () => {
         <button
           type="button"
           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5"
+          className="absolute flex right-1 top-7"
         >
           {showConfirmPassword ? (
             <img src={visible} className="w-6 h-6" alt="visible" />
@@ -186,7 +186,7 @@ const SignUp = () => {
       </ToggleGroup>
 
       <Button onClick={signupHandler}>회원가입 완료하기</Button>
-    </div>
+    </>
   );
 };
 

@@ -31,6 +31,8 @@ const NavBar = () => {
   };
 
   const isOrderPage = location.pathname.includes("/order/");
+  const signUpPage = location.pathname.includes("/signup");
+  const loginPage = location.pathname.includes("/login");
 
   return (
     <NavigationMenu className="flex justify-between pb-3 mb-3 border-b-2">
@@ -60,24 +62,27 @@ const NavBar = () => {
             )}
           </>
         ) : (
-          <>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                onClick={handleLogin}
-                className={navigationMenuTriggerStyle()}
-              >
-                Login
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                onClick={handleSignUp}
-                className={navigationMenuTriggerStyle()}
-              >
-                Sign Up
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </>
+          !signUpPage &&
+          !loginPage && (
+            <>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  onClick={handleLogin}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  Login
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  onClick={handleSignUp}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  Sign Up
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </>
+          )
         )}
       </NavigationMenuList>
     </NavigationMenu>
