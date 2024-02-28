@@ -33,6 +33,7 @@ const NavBar = () => {
   const isOrderPage = location.pathname.includes("/order/");
   const signUpPage = location.pathname.includes("/signup");
   const loginPage = location.pathname.includes("/login");
+  const myPage = location.pathname.includes("/mypage");
 
   return (
     <NavigationMenu className="flex justify-between pb-3 mb-3 border-b-2">
@@ -45,16 +46,20 @@ const NavBar = () => {
             <h2 className="text-lg font-semibold">
               {isOrderPage
                 ? "상품 구매 페이지입니다."
+                : myPage
+                ? `${user.nickname}님의 마이페이지입니다.`
                 : `안녕하세요, ${user.nickname}님`}
             </h2>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                onClick={handleMyPage}
-                className={navigationMenuTriggerStyle()}
-              >
-                My Page
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {!myPage && (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  onClick={handleMyPage}
+                  className={navigationMenuTriggerStyle()}
+                >
+                  마이 페이지
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
             {!user.isSeller && !isOrderPage && (
               <NavigationMenuItem>
                 <CartMenu />
@@ -70,7 +75,7 @@ const NavBar = () => {
                   onClick={handleLogin}
                   className={navigationMenuTriggerStyle()}
                 >
-                  Login
+                  로그인
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -78,7 +83,7 @@ const NavBar = () => {
                   onClick={handleSignUp}
                   className={navigationMenuTriggerStyle()}
                 >
-                  Sign Up
+                  회원가입
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </>

@@ -3,14 +3,30 @@ import { useAuth } from "@/context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase";
 import { useNavigate, Outlet } from "react-router-dom";
+import NavBar from "@/components/NavBar/NavBar";
 
 const SellerButtons = () => {
   const navigate = useNavigate();
   return (
-    <div>
-      <Button onClick={() => navigate("product-list")}>전체 상품 조회</Button>
-      <Button onClick={() => navigate("product-upload")}>상품 등록</Button>
-      <Button onClick={() => navigate("salesmanage")}>판매 관리</Button>
+    <div className="w-1/2 m-auto">
+      <Button
+        className="w-full py-2 text-white bg-blue-500 rounded"
+        onClick={() => navigate("product-list")}
+      >
+        전체 상품 조회
+      </Button>
+      <Button
+        className="w-full py-2 mt-8 text-white bg-blue-500 rounded"
+        onClick={() => navigate("product-upload")}
+      >
+        상품 등록
+      </Button>
+      <Button
+        className="w-full py-2 mt-8 text-white bg-blue-500 rounded"
+        onClick={() => navigate("salesmanage")}
+      >
+        판매 관리
+      </Button>
     </div>
   );
 };
@@ -18,8 +34,13 @@ const SellerButtons = () => {
 const BuyerButtons = () => {
   const navigate = useNavigate();
   return (
-    <div>
-      <Button onClick={() => navigate("orderhistory")}>구매 내역</Button>
+    <div className="w-1/2 m-auto">
+      <Button
+        className="w-full py-2 text-white bg-blue-500 rounded"
+        onClick={() => navigate("orderhistory")}
+      >
+        구매 내역
+      </Button>
     </div>
   );
 };
@@ -43,18 +64,25 @@ const MyPage = () => {
   }
 
   return (
-    <div>
-      <h1>My Page</h1>
-      <Button onClick={handleLogout}>Logout</Button>
-      {user.isSeller ? (
-        // 판매자에게만 보이는 버튼
-        <SellerButtons />
-      ) : (
-        // 구매자에게만 보이는 버튼
-        <BuyerButtons />
-      )}
-      <Outlet />
-    </div>
+    <>
+      <NavBar />
+      <div>
+        <Button
+          className="w-1/2 py-2 m-auto mb-8 text-white bg-blue-500 rounded"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+        {user.isSeller ? (
+          // 판매자에게만 보이는 버튼
+          <SellerButtons />
+        ) : (
+          // 구매자에게만 보이는 버튼
+          <BuyerButtons />
+        )}
+        <Outlet />
+      </div>
+    </>
   );
 };
 

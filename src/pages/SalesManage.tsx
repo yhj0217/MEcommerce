@@ -101,9 +101,15 @@ const SalesManage = () => {
       <div className="container mx-auto">
         {Object.entries(orderGroups).map(([orderBundle, orders]) => (
           <div className="m-2 border-2 divide-y-2" key={orderBundle}>
-            <div className="p-2">
-              <p>주문 번호: {orders[0].orderBundle}</p>
-              <p>주문 시간: {orders[0].createdAt.toDate().toLocaleString()}</p>
+            <div className="grid grid-cols-2 gap-4 p-2">
+              <div>
+                <span className="font-bold">주문 번호: </span>
+                {orders[0].orderBundle}
+              </div>
+              <div>
+                <span className="font-bold">주문 시간: </span>
+                {orders[0].createdAt.toDate().toLocaleString()}
+              </div>
             </div>
             {orders.map((order, index) => (
               <div key={index}>
@@ -114,7 +120,7 @@ const SalesManage = () => {
                   <div className="col-span-1">상태</div>
                   <div className="col-span-1">상태 변경</div>
                 </div>
-                <div className="grid grid-cols-5 gap-4 p-2">
+                <div className="grid grid-cols-5 gap-4 p-2 border-t">
                   <div className="flex col-span-1">
                     {order.productImage ? (
                       <img
@@ -134,7 +140,23 @@ const SalesManage = () => {
                     {order.productPrice} ₩
                   </div>
                   <div className="grid col-span-1 place-items-center">
-                    {order.Status}
+                    <span
+                      className={`${
+                        order.Status === OrderStatus.OrderCancelled
+                          ? "text-red-500 font-semibold"
+                          : order.Status === OrderStatus.OrderConfirm
+                          ? "text-blue-500 font-semibold"
+                          : order.Status === OrderStatus.WaitingforDelivery
+                          ? "text-yellow-500 font-semibold"
+                          : order.Status === OrderStatus.DeliveryStarted
+                          ? "text-green-500 font-semibold"
+                          : order.Status === OrderStatus.SalesCompleted
+                          ? "text-gray-500 font-semibold"
+                          : ""
+                      }`}
+                    >
+                      {order.Status}
+                    </span>
                   </div>
                   <div className="grid col-span-1 place-items-center">
                     <Select

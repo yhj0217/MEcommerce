@@ -52,7 +52,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   };
 
   return (
-    <div className="relative mb-1 border rounded">
+    <div className="relative mb-5 border rounded">
       <div className="flex items-center justify-between mb-2 border-b ">
         <h2 className="pl-2 text-xl font-semibold">{category}</h2>
         <Button

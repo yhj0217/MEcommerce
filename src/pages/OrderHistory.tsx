@@ -91,9 +91,15 @@ const OrderHistory = () => {
       <div className="mx-auto">
         {Object.entries(orderGroups).map(([orderBundle, orders]) => (
           <div className="m-2 border-2 divide-y-2" key={orderBundle}>
-            <div className="p-2">
-              <p>주문 번호: {orders[0].orderBundle}</p>
-              <p>주문 시간: {orders[0].createdAt.toDate().toLocaleString()}</p>
+            <div className="grid grid-cols-2 gap-4 p-2">
+              <div>
+                <span className="font-bold">주문 번호: </span>
+                {orders[0].orderBundle}
+              </div>
+              <div>
+                <span className="font-bold">주문 시간: </span>
+                {orders[0].createdAt.toDate().toLocaleString()}
+              </div>
             </div>
             {orders.map((order, index) => (
               <div key={index}>
@@ -104,7 +110,7 @@ const OrderHistory = () => {
                   <div className="col-span-1 md:col-span-1">판매자</div>
                   <div className="col-span-1 md:col-span-1">상태</div>
                 </div>
-                <div className="grid grid-cols-2 gap-4 p-2 md:grid-cols-7">
+                <div className="grid grid-cols-2 gap-4 p-2 border-t md:grid-cols-7">
                   <div className="flex col-span-2 md:col-span-2">
                     {order.productImage ? (
                       <img
@@ -126,8 +132,24 @@ const OrderHistory = () => {
                   <div className="grid col-span-1 md:col-span-1 place-items-center">
                     {sellerNicknames[order.sellerId]}
                   </div>
-                  <div className="grid col-span-1 md:col-span-1 place-items-center">
-                    {order.Status}
+                  <div className="grid col-span-1 place-items-center">
+                    <span
+                      className={`${
+                        order.Status === OrderStatus.OrderCancelled
+                          ? "text-red-500 font-semibold"
+                          : order.Status === OrderStatus.OrderConfirm
+                          ? "text-blue-500 font-semibold"
+                          : order.Status === OrderStatus.WaitingforDelivery
+                          ? "text-yellow-500 font-semibold"
+                          : order.Status === OrderStatus.DeliveryStarted
+                          ? "text-green-500 font-semibold"
+                          : order.Status === OrderStatus.SalesCompleted
+                          ? "text-gray-500 font-semibold"
+                          : ""
+                      }`}
+                    >
+                      {order.Status}
+                    </span>
                   </div>
                   {order.Status !== OrderStatus.OrderCancelled && (
                     <div className="grid col-span-1 md:col-span-1 place-items-center">

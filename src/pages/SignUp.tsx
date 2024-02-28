@@ -99,93 +99,134 @@ const SignUp = () => {
   return (
     <>
       <NavBar />
-      <div className="grid w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="email">이메일</Label>
-        <Input
-          type="email"
-          id="email"
-          placeholder="이메일을 입력해 주세요"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setEmailError("");
-          }}
-        />
-        {emailError && <div>{emailError}</div>}
-      </div>
+      <div className="flex flex-col items-center">
+        <div className="grid w-full max-w-sm items-center gap-1.5 pb-8">
+          <Label htmlFor="email" className="text-xl">
+            이메일
+          </Label>
+          <Input
+            type="email"
+            id="email"
+            placeholder="이메일을 입력해 주세요"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError("");
+            }}
+          />
+          {emailError && <div>{emailError}</div>}
+        </div>
 
-      <div className="grid w-full max-w-sm items-center gap-1.5 relative">
-        <Label htmlFor="password">비밀번호</Label>
-        <Input
-          type={showPassword ? "text" : "password"}
-          id="password"
-          placeholder="영문자, 숫자, 특수문자 포함 최소 8~20자 "
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute flex right-1 top-7"
-        >
-          {showPassword ? (
-            <img src={visible} className="w-6 h-6" alt="visible" />
-          ) : (
-            <img src={invisible} className="w-6 h-6" alt="invisible" />
+        <div className="grid w-full max-w-sm items-center gap-1.5 pb-8">
+          <Label htmlFor="password" className="text-xl">
+            비밀번호
+          </Label>
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              placeholder="영문자, 숫자, 특수문자 포함 최소 8~20자 "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2.5 top-1/2 transform -translate-y-1/2"
+            >
+              {showPassword ? (
+                <img src={visible} className="w-6 h-6" alt="visible" />
+              ) : (
+                <img src={invisible} className="w-6 h-6" alt="invisible" />
+              )}
+            </button>
+          </div>
+          {passwordError && (
+            <div className="font-bold text-red-600">{passwordError}</div>
           )}
-        </button>
-        {passwordError && <div>{passwordError}</div>}
-      </div>
+        </div>
 
-      <div className="grid w-full max-w-sm items-center gap-1.5 relative">
-        <Label htmlFor="confirmPassword">비밀번호 확인</Label>
-        <Input
-          type={showConfirmPassword ? "text" : "password"}
-          id="confirmPassword"
-          placeholder="비밀번호를 다시 입력해 주세요"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <button
-          type="button"
-          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute flex right-1 top-7"
-        >
-          {showConfirmPassword ? (
-            <img src={visible} className="w-6 h-6" alt="visible" />
-          ) : (
-            <img src={invisible} className="w-6 h-6" alt="invisible" />
+        <div className="grid w-full max-w-sm items-center gap-1.5 pb-8">
+          <Label htmlFor="confirmPassword" className="text-xl">
+            비밀번호 확인
+          </Label>
+          <div className="relative">
+            <Input
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirmPassword"
+              placeholder="비밀번호를 다시 입력해 주세요"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-2.5 top-1/2 transform -translate-y-1/2"
+            >
+              {showConfirmPassword ? (
+                <img src={visible} className="w-6 h-6" alt="visible" />
+              ) : (
+                <img src={invisible} className="w-6 h-6" alt="invisible" />
+              )}
+            </button>
+          </div>
+          {confirmPasswordError && (
+            <div className="font-bold text-red-600">{confirmPasswordError}</div>
           )}
-        </button>
-        {confirmPasswordError && <div>{confirmPasswordError}</div>}
+        </div>
+
+        <div className="grid w-full max-w-sm items-center gap-1.5 pb-8">
+          <Label htmlFor="nickname" className="text-xl">
+            사용자 이름
+          </Label>
+          <Input
+            type="text"
+            id="nickname"
+            placeholder="이름을 입력해 주세요"
+            value={nickname}
+            onChange={(e) => {
+              setNickname(e.target.value);
+              setNicknameError("");
+            }}
+          />
+          {nicknameError && <div>{nicknameError}</div>}
+        </div>
+
+        <div className="grid w-full max-w-sm items-center gap-1.5 pb-8">
+          <Label className="text-xl">회원 유형을 선택해주세요</Label>
+          <ToggleGroup
+            type="single"
+            value={accountType}
+            onValueChange={setAccountType}
+            className="flex border-b border-gray-200"
+          >
+            <ToggleGroupItem
+              value="seller"
+              className={`w-full text-center py-2 ${
+                accountType === "seller"
+                  ? "text-blue-600 font-semibold"
+                  : "text-gray-400"
+              }`}
+            >
+              판매자
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="buyer"
+              className={`w-full text-center py-2 ${
+                accountType === "buyer"
+                  ? "text-blue-600 font-semibold"
+                  : "text-gray-400"
+              }`}
+            >
+              구매자(일반 고객)
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
+        <Button onClick={signupHandler} className="mb-8 w-96">
+          회원가입 완료하기
+        </Button>
       </div>
-
-      <div className="grid w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="nickname">사용자 이름</Label>
-        <Input
-          type="text"
-          id="nickname"
-          placeholder="이름을 입력해 주세요"
-          value={nickname}
-          onChange={(e) => {
-            setNickname(e.target.value);
-            setNicknameError("");
-          }}
-        />
-        {nicknameError && <div>{nicknameError}</div>}
-      </div>
-
-      <Label>회원 구분</Label>
-      <ToggleGroup
-        type="single"
-        value={accountType}
-        onValueChange={setAccountType}
-      >
-        <ToggleGroupItem value="seller">판매자</ToggleGroupItem>
-        <ToggleGroupItem value="buyer">구매자(일반 고객)</ToggleGroupItem>
-      </ToggleGroup>
-
-      <Button onClick={signupHandler}>회원가입 완료하기</Button>
     </>
   );
 };
