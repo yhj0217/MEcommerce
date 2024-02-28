@@ -66,7 +66,7 @@ const Order = () => {
       );
 
       if (checkedItems.length === 0) {
-        alert("구매할 상품을 선택해주세요.");
+        alert("구매할 상품을 선택해 주세요.");
         return;
       }
 

@@ -14,6 +14,7 @@ import OrderDetail from "@/pages/OrderDetail";
 
 import { useAuth } from "@/context/AuthContext";
 import OrderHistory from "@/pages/OrderHistory";
+import SalesManage from "@/pages/SalesManage";
 
 export default function Router() {
   const { user, loading, isSeller } = useAuth();
@@ -68,6 +69,14 @@ export default function Router() {
       path: "/mypage/product-manage/:id",
       element: loading ? null : user && isSeller ? (
         <ProductManage />
+      ) : (
+        <Navigate to="/mypage" />
+      ),
+    },
+    {
+      path: "/mypage/salesmanage",
+      element: loading ? null : user && isSeller ? (
+        <SalesManage />
       ) : (
         <Navigate to="/mypage" />
       ),
