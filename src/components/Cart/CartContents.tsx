@@ -212,20 +212,24 @@ const CartContents = () => {
       <SheetHeader>
         <SheetTitle>장바구니</SheetTitle>
       </SheetHeader>
-      <Table>
-        <TableCaption>장바구니에 추가된 상품 목록입니다.</TableCaption>
-        <TableHeader>
+      <Table className="bg-white shadow-lg table-fixed ">
+        <TableCaption className="p-3 text-lg font-bold">
+          장바구니에 추가된 상품 목록입니다.
+        </TableCaption>
+        <TableHeader className="bg-gray-100 ">
           <TableRow>
-            <TableHead>상품명</TableHead>
-            <TableHead>가격</TableHead>
-            <TableHead>수량</TableHead>
-            <TableHead className="text-right">합계</TableHead>
+            <TableHead className="p-3 text-center">상품명</TableHead>
+            <TableHead className="p-3 text-center">가격</TableHead>
+            <TableHead className="p-3 text-center">수량</TableHead>
+            <TableHead className="p-3 pr-3 text-right" colSpan={2}>
+              합계
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {cartItems?.map((item: Cart, idx: number) => (
             <TableRow key={item.id}>
-              <TableCell className="flex">
+              <TableCell className="flex items-center justify-center">
                 <img
                   src={cartProducts?.[idx]?.productImage[0]}
                   alt="상품 첫 이미지"
@@ -235,18 +239,23 @@ const CartContents = () => {
                   {cartProducts?.[idx]?.productName}
                 </div>
               </TableCell>
-              <TableCell>{cartProducts?.[idx]?.productPrice}₩</TableCell>
-              <TableCell>
+              <TableCell className="text-center">
+                {cartProducts?.[idx]?.productPrice}₩
+              </TableCell>
+              <TableCell
+                className="text-center"
+                style={{ verticalAlign: "middle" }}
+              >
                 <Button
-                  className="h-6 p-2"
+                  className="h-6 p-2 mr-2"
                   onClick={() => handleDecreaseQuantity(idx)}
                   disabled={quantity[idx] === 1}
                 >
                   -
                 </Button>
-                {quantity[idx]}
+                <span className="font-semibold">{quantity[idx]}</span>
                 <Button
-                  className="h-6 p-2"
+                  className="h-6 p-2 ml-2"
                   onClick={() => handleIncreaseQuantity(idx)}
                   disabled={
                     cartProducts?.[idx] &&
@@ -260,12 +269,18 @@ const CartContents = () => {
                 <Button
                   onClick={() => handleUpdateQuantity(item.id, idx)}
                   disabled={!isQuantityChanged[idx]}
+                  className="p-1 mr-2 text-white bg-blue-500 hover:bg-blue-600"
                 >
                   변경
                 </Button>
                 <AlertDialog open={isDialogOpen}>
                   <AlertDialogTrigger asChild>
-                    <Button onClick={() => openDialog(idx)}>삭제</Button>
+                    <Button
+                      onClick={() => openDialog(idx)}
+                      className="p-1 text-white bg-red-500 hover:bg-red-600"
+                    >
+                      삭제
+                    </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -284,7 +299,7 @@ const CartContents = () => {
                   </AlertDialogContent>
                 </AlertDialog>
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="p-3 text-right">
                 {cartProducts &&
                   cartProducts[idx]?.productPrice * item.productQuantity}
                 ₩
@@ -294,8 +309,10 @@ const CartContents = () => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={4}>총합</TableCell>
-            <TableCell className="text-right">
+            <TableCell colSpan={4} className="p-3 font-bold">
+              총합
+            </TableCell>
+            <TableCell className="p-3 text-right ">
               {cartItems?.reduce(
                 (acc: number, cur: Cart) =>
                   acc + cur.productPrice * cur.productQuantity,
@@ -308,7 +325,11 @@ const CartContents = () => {
       </Table>
       <SheetFooter>
         <SheetClose asChild>
-          <Button type="submit" onClick={handleOrder}>
+          <Button
+            type="submit"
+            className="text-white bg-green-500 hover:bg-green-600"
+            onClick={handleOrder}
+          >
             구매하기
           </Button>
         </SheetClose>
