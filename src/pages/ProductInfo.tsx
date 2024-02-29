@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   addDoc,
   collection,
@@ -40,6 +40,7 @@ const ProductInfo = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { cartItems, setCartItems } = useCart();
   const [isItemInCart, setIsItemInCart] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (id) {
@@ -206,7 +207,15 @@ const ProductInfo = () => {
                 <div className="mt-3">
                   <Sheet>
                     <SheetTrigger asChild>
-                      <Button onClick={isItemInCart ? undefined : addToCart}>
+                      <Button
+                        onClick={() => {
+                          if (!user) {
+                            navigate("/login");
+                          } else if (!isItemInCart) {
+                            addToCart();
+                          }
+                        }}
+                      >
                         {isItemInCart ? "장바구니 보기" : "장바구니에 추가"}
                       </Button>
                     </SheetTrigger>
