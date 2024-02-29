@@ -58,12 +58,16 @@ const CategoryCard = forwardRef<HTMLDivElement, CategoryCardProps>(
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <div className="absolute left-0 ml-8 transform -translate-y-1/2 top-1/2">
-              <CarouselPrevious />
-            </div>
-            <div className="absolute right-0 transform -translate-y-1/2 mr-9 top-1/2">
-              <CarouselNext />
-            </div>
+            {product.productImage.length > 1 && (
+              <>
+                <div className="absolute left-0 ml-8 transform -translate-y-1/2 top-1/2">
+                  <CarouselPrevious />
+                </div>
+                <div className="absolute right-0 transform -translate-y-1/2 mr-9 top-1/2">
+                  <CarouselNext />
+                </div>
+              </>
+            )}
           </Carousel>
         </div>
         <div className="text-sm text-center text-muted-foreground">

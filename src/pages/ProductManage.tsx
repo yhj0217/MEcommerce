@@ -19,13 +19,7 @@ import { Button } from "@/components/ui/button";
 import NavBar from "@/components/NavBar/NavBar";
 
 const ProductManage = () => {
-  const categories = [
-    "카테고리1",
-    "카테고리2",
-    "카테고리3",
-    "카테고리4",
-    "카테고리5",
-  ];
+  const categories = ["상의", "바지", "신발", "모자", "액세서리"];
   const { id: productId } = useParams<{ id: string }>();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [productDetail, setProductDetail] = useState("");

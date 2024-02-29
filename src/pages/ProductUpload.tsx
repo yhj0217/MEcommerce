@@ -20,13 +20,7 @@ interface Product {
 }
 
 const ProductUpload = () => {
-  const categories = [
-    "카테고리1",
-    "카테고리2",
-    "카테고리3",
-    "카테고리4",
-    "카테고리5",
-  ];
+  const categories = ["상의", "바지", "신발", "모자", "액세서리"];
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [productDetail, setProductDetail] = useState("");
@@ -70,7 +64,7 @@ const ProductUpload = () => {
       productPrice: productPrice || 0,
       productQuantity: productQuantity || 0,
       productDescription: productDetail,
-      productCategory,
+      productCategory: productCategory,
       productImage: urls,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
@@ -85,7 +79,7 @@ const ProductUpload = () => {
       setProductPrice(null);
       setProductQuantity(null);
       setSelectedFiles([]);
-      setProductCategory("");
+      setProductCategory(categories[0]);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
