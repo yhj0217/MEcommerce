@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { useNavigate, useLocation } from "react-router-dom";
 import CartMenu from "../Cart/CartMenu";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const { user } = useAuth();
@@ -16,14 +17,6 @@ const NavBar = () => {
 
   const handleMyPage = () => {
     navigate("/mypage");
-  };
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleSignUp = () => {
-    navigate("/signup");
   };
 
   const handleHome = () => {
@@ -71,20 +64,14 @@ const NavBar = () => {
           !loginPage && (
             <>
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  onClick={handleLogin}
-                  className={navigationMenuTriggerStyle()}
-                >
+                <Link to="/login" className={navigationMenuTriggerStyle()}>
                   로그인
-                </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  onClick={handleSignUp}
-                  className={navigationMenuTriggerStyle()}
-                >
+                <Link to="/signup" className={navigationMenuTriggerStyle()}>
                   회원가입
-                </NavigationMenuLink>
+                </Link>
               </NavigationMenuItem>
             </>
           )
