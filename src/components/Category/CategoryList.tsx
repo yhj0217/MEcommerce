@@ -54,11 +54,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ category, isFirst }) => {
 
   return (
     <div className={`relative border rounded ${isFirst ? "" : "mt-5"}`}>
-      <div className="flex items-center justify-between mb-2 border-b ">
+      <div className="flex items-center justify-between mb-2 border-b bg-sky-100">
         <h2 className="pl-2 text-xl font-semibold">{category}</h2>
         <Button
           variant="outline"
-          className="px-3 py-0 border-black"
+          className="px-3 py-0 border-gray-400"
           onClick={handleMoreClick}
         >
           더보기

@@ -99,6 +99,7 @@ const Categories = () => {
   return (
     <div>
       <NavBar />
+      <div className="text-3xl font-bold">{category}</div>
       <div className="flex flex-col items-end">
         <div className="mb-4">
           <Select
