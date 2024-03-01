@@ -1,22 +1,23 @@
 #root {
   text-align: center;
+  background-color: #f8f9fa;
 }
 
 @media (max-width: 1536px) {
   #root {
-    margin: 40px 248px 0 248px;
+    padding: 0px 200px;
   }
 }
 
 @media (min-width: 1537px) and (max-width: 1648px) {
   #root {
-    margin: 40px 280px 0 280px;
+    padding: 0px 280px 0 280px;
   }
 }
 
 @media (min-width: 1649px) {
   #root {
-    margin: 40px 430px 0 430px;
+    padding: 0px 430px 0 430px;
   }
 }
 

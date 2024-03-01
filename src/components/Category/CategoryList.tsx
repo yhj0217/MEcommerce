@@ -52,7 +52,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   };
 
   return (
-    <div className="relative mb-5 border rounded">
+    <div className="relative mt-5 border rounded">
       <div className="flex items-center justify-between mb-2 border-b ">
         <h2 className="pl-2 text-xl font-semibold">{category}</h2>
         <Button
@@ -63,10 +63,12 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
           더보기
         </Button>
       </div>
-      <div className="flex space-x-4">
+      <div className="flex flex-wrap justify-center px-1">
         {products &&
           products.map((product, index) => (
-            <CategoryCard key={index} product={product} />
+            <div key={index}>
+              <CategoryCard product={product} />
+            </div>
           ))}
       </div>
     </div>

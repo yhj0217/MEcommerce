@@ -115,10 +115,10 @@ const Categories = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-wrap justify-center">
+        <div className="flex flex-wrap justify-between">
           {data?.pages?.flatMap((page = [], index) =>
             page.map((product: Product, productIndex) => (
-              <div key={product.id}>
+              <div key={product.id} className="w-1/4">
                 <CategoryCard
                   product={product}
                   ref={

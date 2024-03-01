@@ -13,7 +13,9 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
-            <Router />
+            <div className="px-6 py-2 bg-white">
+              <Router />
+            </div>
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
