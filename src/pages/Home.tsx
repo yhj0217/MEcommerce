@@ -7,8 +7,12 @@ const Home = () => {
   return (
     <div>
       <NavBar />
-      {categories.map((category) => (
-        <CategoryList key={category} category={category} />
+      {categories.map((category, index) => (
+        <CategoryList
+          key={category}
+          category={category}
+          isFirst={index === 0}
+        />
       ))}
     </div>
   );

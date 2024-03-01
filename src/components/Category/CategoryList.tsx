@@ -15,9 +15,10 @@ import { Button } from "../ui/button";
 
 interface CategoryListProps {
   category: string;
+  isFirst: boolean;
 }
 
-const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
+const CategoryList: React.FC<CategoryListProps> = ({ category, isFirst }) => {
   const [products, setProducts] = useState<Product[] | null>(null);
   const navigate = useNavigate();
 
@@ -52,7 +53,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ category }) => {
   };
 
   return (
-    <div className="relative mt-5 border rounded">
+    <div className={`relative border rounded ${isFirst ? "" : "mt-5"}`}>
       <div className="flex items-center justify-between mb-2 border-b ">
         <h2 className="pl-2 text-xl font-semibold">{category}</h2>
         <Button

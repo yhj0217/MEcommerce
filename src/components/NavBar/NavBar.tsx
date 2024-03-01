@@ -9,6 +9,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import CartMenu from "../Cart/CartMenu";
 import { Link } from "react-router-dom";
+import MEcommerce from "@/assets/MEcommerce.webp";
 
 const NavBar = () => {
   const { user } = useAuth();
@@ -19,20 +20,20 @@ const NavBar = () => {
     navigate("/mypage");
   };
 
-  const handleHome = () => {
-    navigate("/");
-  };
-
   const isOrderPage = location.pathname.includes("/order/");
   const signUpPage = location.pathname.includes("/signup");
   const loginPage = location.pathname.includes("/login");
   const myPage = location.pathname.includes("/mypage");
 
   return (
-    <NavigationMenu className="flex justify-between pb-3 mb-3 border-b-2">
-      <h1 onClick={handleHome} className="text-3xl font-bold cursor-pointer">
-        MEcommerce
-      </h1>
+    <NavigationMenu className="flex justify-between h-10 pb-3 mb-3 border-b-2">
+      <Link to="/">
+        <img
+          src={MEcommerce}
+          alt="MEcommerce logo"
+          className="text-3xl font-bold cursor-pointer"
+        />
+      </Link>
       <NavigationMenuList>
         {user ? (
           <>
