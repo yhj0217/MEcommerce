@@ -4,7 +4,7 @@
 
 ## 🕶️ 서비스 이용하기
 
-[MEcommerce](https://m-ecommerce-three.vercel.app)
+[MEcommerce](https://mecommerce-shop.vercel.app)
 
 ```
 🛍️ 판매자 테스트 계정
